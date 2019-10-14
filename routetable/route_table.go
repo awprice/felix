@@ -462,6 +462,8 @@ func (r *RouteTable) syncRoutesForLink(ifaceName string) error {
 		delete(r.pendingIfaceNameToTargets, ifaceName)
 	}
 
+	log.Println(6, r.ifaceNameToTargets)
+	log.Println(7, r.ifaceNameToTargets[ifaceName])
 	expectedTargets := r.ifaceNameToTargets[ifaceName]
 	expectedCIDRs := set.New()
 	for _, t := range expectedTargets {
@@ -570,9 +572,14 @@ func (r *RouteTable) syncRoutesForLink(ifaceName string) error {
 			oldCIDRs.Add(dest)
 		}
 	}
+	log.Println(1, expectedTargets)
 	for _, target := range expectedTargets {
 		cidr := target.CIDR
+		log.Println(2, cidr)
+		log.Println(3, alreadyCorrectCIDRs)
+		log.Println(4, alreadyCorrectCIDRs.Contains(cidr))
 		if !alreadyCorrectCIDRs.Contains(cidr) {
+			log.Println(5, cidr)
 			logCxt := logCxt.WithField("targetCIDR", target.CIDR)
 			logCxt.Info("Syncing routes: adding new route.")
 			ipNet := cidr.ToIPNet()
